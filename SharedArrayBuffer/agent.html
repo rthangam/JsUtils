@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agents example</title>
+</head>
+<body>
+    <script type="text/javascript">
+    // Shared data between this agent, and another worker.
+    let sharedHeap = new SharedArrayBuffer(16);
+    // Our view of the data.
+    let heapArray = new Int32Array(sharedHeap);
+    // Create a new agent (worker).
+    let agentSmith = new Worker('agent-smith.js');
+    agentSmith.onmessage = (message) => {
+        // Agent sends the index of the data it modified.
+        let modifiedIndex = message.data;
+        // Check the data is modified:
+        console.log(heapArray[modifiedIndex]); // 100
+    };
+    // Send the shared data to the agent.
+    agentSmith.postMessage(sharedHeap);
+    </script>
+</body>
+</html>
