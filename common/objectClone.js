@@ -17,6 +17,7 @@ function clone(obj, cloneMap = new WeakMap){
         return cloneMap.get(obj);
     }
 
+    //Check if the value is array and clone it
     if(Array.isArray(obj)){
         const r = [];
         cloneMap.set(obj, r);
@@ -28,8 +29,8 @@ function clone(obj, cloneMap = new WeakMap){
         return r;
     }
 
+    //If the value is an object then clone it
     const r = {};
-
     for(const key of Object.keys(obj)){
         r[key] = clone(obj[key], cloneMap);
     }
