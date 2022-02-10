@@ -8,32 +8,25 @@
  * cyclic references too.
  * 
  */
-function clone(obj, cloneMap = new WeakMap){
-    if(typeof obj != 'object' || !obj){
-        return obj;
+function clone(obj, cloneMap = new WeakMap()) {
+  if (typeof obj != 'object' || !obj) return obj;
+
+  if (cloneMap.has(obj)) return cloneMap.get(obj);
+
+  //Check if the type is Array
+  if (Array.isArray(obj)) {
+    const r = [];
+    cloneMap.set(obj, r);
+    for (const [i, item] of obj.entries()) {
+      r[i] = clone(item, cloneMap);
     }
-
-    if(cloneMap.has(obj)){
-        return cloneMap.get(obj);
-    }
-
-    //Check if the value is array and clone it
-    if(Array.isArray(obj)){
-        const r = [];
-        cloneMap.set(obj, r);
-
-        for(const [i, item] of obj.entries()){
-            r[i] = clone(item, cloneMap);
-        }
-
-        return r;
-    }
-
-    //If the value is an object then clone it
-    const r = {};
-    for(const key of Object.keys(obj)){
-        r[key] = clone(obj[key], cloneMap);
-    }
-
     return r;
+  }
+
+  const r = {};
+  cloneMap.set(obj, r);
+  for (const key of Object.keys(obj)) {  
+    r[key] = clone(obj[key], cloneMap);
+  }
+  return r;
 }
